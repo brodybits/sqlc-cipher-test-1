@@ -21,6 +21,14 @@ public class SQLGDatabaseHandle implements SQLDatabaseHandle {
   }
 
   @Override
+  public int keyNativeString(String key) {
+    /* check state (should be checked by caller): */
+    if (dbhandle == 0) return SQLCode.MISUSE;
+
+    return SQLiteGlue.sqlg_db_key_string_native(this.dbhandle, key);
+  }
+
+  @Override
   public int close() {
     /* check state (should be checked by caller): */
     if (dbhandle == 0) return SQLCode.MISUSE;
@@ -96,7 +104,7 @@ public class SQLGDatabaseHandle implements SQLDatabaseHandle {
       /* check state (should be checked by caller): */
       if (sthandle == 0) return SQLCode.MISUSE;
 
-      return SQLiteGlue.sqlg_st_bind_int64(this.sthandle, col, val);
+      return SQLiteGlue.sqlg_st_bind_long(this.sthandle, col, val);
     }
 
     @Override
@@ -104,7 +112,7 @@ public class SQLGDatabaseHandle implements SQLDatabaseHandle {
       /* check state (should be checked by caller): */
       if (sthandle == 0) return SQLCode.MISUSE;
 
-      return SQLiteGlue.sqlg_st_bind_text_string(this.sthandle, col, val);
+      return SQLiteGlue.sqlg_st_bind_text_native(this.sthandle, col, val);
     }
 
     @Override
@@ -160,7 +168,7 @@ public class SQLGDatabaseHandle implements SQLDatabaseHandle {
       /* check state (should be checked by caller): */
       if (sthandle == 0) return null;
 
-      return SQLiteGlue.sqlg_st_column_text_string(this.sthandle, col);
+      return SQLiteGlue.sqlg_st_column_text_native(this.sthandle, col);
     }
 
     @Override

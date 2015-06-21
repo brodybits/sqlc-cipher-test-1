@@ -35,7 +35,7 @@ public class SQLiteGlueTest extends Activity
 
     SQLiteConnector connector = new SQLiteGlueConnector();
 
-    File dbfile = new File(getFilesDir(), "DB.db");
+    File dbfile = new File(getFilesDir(), "my.db");
 
     SQLiteConnection mydbc;
 
@@ -44,6 +44,14 @@ public class SQLiteGlueTest extends Activity
         SQLiteOpenFlags.READWRITE | SQLiteOpenFlags.CREATE);
     } catch (java.lang.Exception ex) {
       android.util.Log.w("SQLiteGlueTest", "DB open exception", ex);
+      return;
+    }
+
+    try {
+      mydbc.keyString("test-password");
+    } catch (java.lang.Exception ex) {
+      android.util.Log.w("SQLiteGlueTest", "sqlite3_key exception", ex);
+      mydbc.dispose();
       return;
     }
 
@@ -135,28 +143,35 @@ public class SQLiteGlueTest extends Activity
     sr = st.step();
     while (sr) {
       android.util.Log.i("SQLiteGlueTest", "step next");
+      r1.add("step next");
 
       colcount = st.getColumnCount();
       android.util.Log.i("SQLiteGlueTest", "column count: " + colcount);
+      r1.add("column count: " + colcount);
 
       for (int i=0;i<colcount;++i) {
         colname = st.getColumnName(i);
         android.util.Log.i("SQLiteGlueTest", "column " + i + " name: " + colname);
+        r1.add("column " + i + " name: " + colname);
 
         coltype = st.getColumnType(i);
         android.util.Log.i("SQLiteGlueTest", "column " + i + " type: " + coltype);
+        r1.add("column " + i + " type: " + coltype);
 
         String text = st.getColumnTextString(i);
         android.util.Log.i("SQLiteGlueTest", "col " + i + " text " + text);
+        r1.add("col " + i + " text " + text);
       }
 
       sr = st.step();
     }
     android.util.Log.i("SQLiteGlueTest", "last step " + sr);
+    r1.add("last step " + sr);
 
     st.dispose();
 
-    mydbc.dispose();
+    // TBD ???:
+    //mydbc.dispose();
 
     } catch (java.sql.SQLException ex) {
       android.util.Log.w("SQLiteGlueTest", "sql exception", ex);
